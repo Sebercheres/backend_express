@@ -24,7 +24,7 @@ exports.getTransmissionById = asyncHandler(async (req, res) => {
 exports.updateTransmission = asyncHandler(async (req, res) => {
     const transmission = await transmission.findById(req.params.id);
     if (transmission) {
-        transmission.name = req.body.name || transmission.name;
+        transmission.name = req.body.transmissionName || transmission.transmissionName;
         const updatedTransmission = await transmission.save();
         res.status(200).json(updatedTransmission);
     } else {

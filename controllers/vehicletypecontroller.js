@@ -24,8 +24,8 @@ exports.getVehicletypeById = asyncHandler(async (req, res) => {
 exports.updateVehicletype = asyncHandler(async (req, res) => {
     const vehicletype = await vehicletype.findById(req.params.id);
     if (vehicletype) {
-        vehicletype.name = req.body.name || vehicletype.name;
-        const updatedVehicletype = await vehicletype.save();
+        vehicletype.vehicleName = req.body.numberOfWheels || vehicletype.vehicleName;
+        vehicletype.numberOfWheels = req.body.numberOfWheels || vehicletype.numberOfWheels;
         res.status(200).json(updatedVehicletype);
     } else {
         res.status(404);

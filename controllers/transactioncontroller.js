@@ -1,18 +1,25 @@
-const transaction = require('../models/transaction');
+const Transaction = require('../models/transaction');
 const asyncHandler = require('express-async-handler');
 
+// Get all transactions for the logged-in user
 exports.getTransactions = asyncHandler(async (req, res) => {
-    const transactions = await transaction.find({});
+    const transactions = await Transaction.find({ masterUsersId: req.user.id });
     res.status(200).json(transactions);
 });
 
+// Create a new transaction
 exports.createTransaction = asyncHandler(async (req, res) => {
-    const transaction = await transaction.create(req.body);
+    const transactionData = {
+        ...req.body,
+        masterUsersId: req.user.id
+    };
+    const transaction = await Transaction.create(transactionData);
     res.status(201).json(transaction);
 });
 
+// Get a transaction by ID for the logged-in user
 exports.getTransactionById = asyncHandler(async (req, res) => {
-    const transaction = await transaction.findById(req.params.id);
+    const transaction = await Transaction.findOne({ _id: req.params.id, masterUsersId: req.user.id });
     if (transaction) {
         res.status(200).json(transaction);
     } else {
@@ -21,15 +28,14 @@ exports.getTransactionById = asyncHandler(async (req, res) => {
     }
 });
 
+// Update a transaction by ID for the logged-in user
 exports.updateTransaction = asyncHandler(async (req, res) => {
-    const transaction = await transaction.findById(req.params.id);
+    const transaction = await Transaction.findOne({ _id: req.params.id, masterUsersId: req.user.id });
     if (transaction) {
-        transaction.vehicle = req.body.vehicle || transaction.vehicle;
-        transaction.customer = req.body.customer || transaction.customer;
-        transaction.startDate = req.body.startDate || transaction.startDate;
-        transaction.endDate = req.body.endDate || transaction.endDate;
-        transaction.totalPrice = req.body.totalPrice || transaction.totalPrice;
-        transaction.status = req.body.status || transaction.status;
+        transaction.rentalId = req.body.rentalId || transaction.rentalId;
+        transaction.total = req.body.total || transaction.total;
+        transaction.transactionDate = req.body.transactionDate || transaction.transactionDate;
+        transaction.method = req.body.method || transaction.method;
         const updatedTransaction = await transaction.save();
         res.status(200).json(updatedTransaction);
     } else {
@@ -38,8 +44,9 @@ exports.updateTransaction = asyncHandler(async (req, res) => {
     }
 });
 
+// Delete a transaction by ID for the logged-in user
 exports.deleteTransaction = asyncHandler(async (req, res) => {
-    const transaction = await transaction.findById(req.params.id);
+    const transaction = await Transaction.findOne({ _id: req.params.id, masterUsersId: req.user.id });
     if (transaction) {
         await transaction.remove();
         res.status(200).json({ message: 'Transaction removed' });

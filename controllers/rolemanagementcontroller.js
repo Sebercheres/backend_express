@@ -25,7 +25,6 @@ exports.updateRolemanagement = asyncHandler(async (req, res) => {
     const role = await roleMangement.findById(req.params.id);
     if (role) {
         role.name = req.body.name || role.name;
-        role.description = req.body.description || role.description;
         const updatedRole = await role.save();
         res.status(200).json(updatedRole);
     } else {
