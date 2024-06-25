@@ -28,6 +28,7 @@ const generateToken = (user) => {
 };
 
 exports.register = asyncHandler(async (req, res) => {
+    console.log(req.body);
     const { username, name, password, email, address, phoneNumber, roleManagementId } = req.body;
     const hashedPassword = await hashPassword(password);
     await createUser({
